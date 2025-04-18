@@ -20,6 +20,7 @@ func HandleNewMessage(message chan telegram.Message) http.HandlerFunc {
 			log.Printf("Error decoding message: %v", err)
 			return
 		}
+		log.Println("Received new message")
 		message <- telegram.Message{Text: m.Text}
 		w.WriteHeader(http.StatusOK)
 	}
