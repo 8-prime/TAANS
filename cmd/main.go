@@ -1,12 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
-	"strconv"
+	"taans/internal/app"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
 )
 
@@ -15,21 +12,15 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	fmt.Println("Hello World")
 
-	bot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
+	app, err := app.NewApplication()
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 
-	var chatIdString = os.Getenv("USER_ID")
-	chatId, err := strconv.ParseInt(chatIdString, 10, 64)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	app.RegisterRoutes()
 
-	msg := tgbotapi.NewMessage(chatId, "Hello World")
-	bot.Send(msg)
+	if err := app.Start(); err != nil {
+		log.Fatalf("Server failed: %v", err)
+	}
 }
